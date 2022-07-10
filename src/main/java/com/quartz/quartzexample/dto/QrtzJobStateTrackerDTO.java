@@ -1,7 +1,7 @@
 package com.quartz.quartzexample.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.quartz.quartzexample.model.QrtzJobStateTracker;
+import com.quartz.quartzexample.model.JobTracking;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +18,7 @@ public class QrtzJobStateTrackerDTO {
 
     private String lastUpdate;
 
-    public QrtzJobStateTrackerDTO(QrtzJobStateTracker qrtzJobStateTracker) {
+    public QrtzJobStateTrackerDTO(JobTracking qrtzJobStateTracker) {
         this.jobName = qrtzJobStateTracker.getJobName();
         this.state = qrtzJobStateTracker.getState();
         this.lastUpdate = qrtzJobStateTracker.getLastUpdate();

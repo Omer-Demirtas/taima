@@ -1,6 +1,6 @@
 package com.quartz.quartzexample.utils;
 
-import com.quartz.quartzexample.model.QrtzJobStateTracker;
+import com.quartz.quartzexample.model.JobTracking;
 import com.quartz.quartzexample.service.QrtzJobStateTrackerService;
 import org.springframework.stereotype.Component;
 
@@ -15,10 +15,10 @@ public class UpdateJobState
         this.qrtzJobStateTrackerService = qrtzJobStateTrackerService;
     }
 
-    public QrtzJobStateTracker updateJobState(String jobName) {
-        QrtzJobStateTracker qrtzJobStateTracker = qrtzJobStateTrackerService.findFirstByJobName(jobName);
+    public JobTracking updateJobState(String jobName) {
+        JobTracking qrtzJobStateTracker = qrtzJobStateTrackerService.findFirstByJobName(jobName);
         if (qrtzJobStateTracker == null) {
-            QrtzJobStateTracker newQrtzJobStateTracker = new QrtzJobStateTracker();
+            JobTracking newQrtzJobStateTracker = new JobTracking();
             newQrtzJobStateTracker.setJobName(jobName);
             newQrtzJobStateTracker.setLastUpdate(LocalDateTime.now().toString());
             newQrtzJobStateTracker.setState(JobStateEnum.RUNNING.toString());

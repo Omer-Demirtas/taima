@@ -1,12 +1,11 @@
 package com.quartz.quartzexample.job;
 
-import com.quartz.quartzexample.model.QrtzJobStateTracker;
+import com.quartz.quartzexample.model.JobTracking;
 import com.quartz.quartzexample.service.ExampleJobService;
 import com.quartz.quartzexample.service.QrtzJobStateTrackerService;
 import com.quartz.quartzexample.utils.JobStateEnum;
 import com.quartz.quartzexample.utils.UpdateJobState;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -30,7 +29,7 @@ public class ExampleJob extends QuartzJobBean
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException
     {
         String jobName = context.getJobDetail().getKey().getName();
-        QrtzJobStateTracker qrtzJobStateTracker = updateJobState.updateJobState(jobName);
+        JobTracking qrtzJobStateTracker = updateJobState.updateJobState(jobName);
         if (qrtzJobStateTracker == null)
         {
             return;

@@ -5,9 +5,9 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "QRTZ_JOB_STATE_TRACKER")
+@Table(name = "QRTZ_JOB_TRACKING")
 @Data
-public class QrtzJobStateTracker
+public class JobTracking
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

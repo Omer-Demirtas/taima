@@ -1,9 +1,9 @@
 package com.quartz.quartzexample.repository;
 
-import com.quartz.quartzexample.model.QrtzJobStateTracker;
+import com.quartz.quartzexample.model.JobTracking;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface QrtzJobStateTrackerRepository extends JpaRepository<QrtzJobStateTracker, Long>
+public interface QrtzJobStateTrackerRepository extends JpaRepository<JobTracking, Long>
 {
-    QrtzJobStateTracker findFirstByJobName(String jobName);
+    JobTracking findFirstByJobName(String jobName);
 }
