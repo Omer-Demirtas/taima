@@ -1,24 +1,40 @@
 package com.quartz.quartzexample.model;
 
-import lombok.Data;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.quartz.quartzexample.utils.JobStatus;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "QRTZ_JOB_TRACKING")
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class JobTracking
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "job_name", nullable = false)
+    @Column(name = "JOB_NAME", nullable = false)
     private String jobName;
 
-    @Column(name = "state", nullable = false)
-    private String state;
+    @Column(name = "TRIGGER_NAME")
+    private String triggerName;
 
-    @Column(name = "last_update", nullable = false)
-    private String lastUpdate;
+    @Column(name = "LAST_START_AT", nullable = false)
+    private Date lastStartAt;
+
+    @Column(name = "LAST_FINISH_AT")
+    private Date lastFinishAt;
+
+    @Column(name = "DESCRIPTION")
+    private String description;
+
+    @Column(name = "JOB_STATUS")
+    @Enumerated(EnumType.ORDINAL)
+    private JobStatus jobStatus;
 }
