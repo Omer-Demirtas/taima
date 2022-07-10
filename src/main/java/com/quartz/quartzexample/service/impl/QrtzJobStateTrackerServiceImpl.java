@@ -52,6 +52,7 @@ public class QrtzJobStateTrackerServiceImpl implements QrtzJobStateTrackerServic
     }
 
     private void formatProcess(JobTracking qrtzJobStateTracker) {
+        /*
         String lastUpdate = qrtzJobStateTracker.getLastUpdate();
         String[] values = lastUpdate.split("T");
         lastUpdate = values[0] + " " + values[1].substring(0, 5);
@@ -62,5 +63,7 @@ public class QrtzJobStateTrackerServiceImpl implements QrtzJobStateTrackerServic
         String newDateString = dateFormatConverter.formatDate(NEW_FORMAT, OLD_FORMAT, oldDateString);
 
         qrtzJobStateTracker.setLastUpdate(newDateString);
+
+         */
     }
 }

@@ -29,17 +29,7 @@ public class ExampleJob extends QuartzJobBean
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException
     {
         String jobName = context.getJobDetail().getKey().getName();
-        JobTracking qrtzJobStateTracker = updateJobState.updateJobState(jobName);
-        if (qrtzJobStateTracker == null)
-        {
-            return;
-        }
 
         log.info("{} Executed {}:{}:{}", jobName,  LocalDateTime.now().getHour(), LocalDateTime.now().getMinute(), LocalDateTime.now().getSecond());
-        exampleJobService.execute();
-
-        qrtzJobStateTracker.setState(JobStateEnum.FINISHED.toString());
-        qrtzJobStateTracker.setLastUpdate(LocalDateTime.now().toString());
-        qrtzJobStateTrackerService.save(qrtzJobStateTracker);
     }
 }

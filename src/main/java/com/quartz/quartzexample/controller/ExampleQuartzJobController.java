@@ -33,7 +33,7 @@ public class ExampleQuartzJobController
                         triggerNameExampleJob,
                         triggerGroupExampleJob,
                         "Barsan Delete Old Data Service Trigger",
-                        "0/2 0 0 ? * * *"
+                        "0 0 0 ? * * *"
                 )
         );
     }

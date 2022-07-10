@@ -20,7 +20,7 @@ public class QrtzJobStateTrackerDTO {
 
     public QrtzJobStateTrackerDTO(JobTracking qrtzJobStateTracker) {
         this.jobName = qrtzJobStateTracker.getJobName();
-        this.state = qrtzJobStateTracker.getState();
-        this.lastUpdate = qrtzJobStateTracker.getLastUpdate();
+        //this.state = qrtzJobStateTracker.getState();
+        //this.lastUpdate = qrtzJobStateTracker.getLastUpdate();
     }
 }

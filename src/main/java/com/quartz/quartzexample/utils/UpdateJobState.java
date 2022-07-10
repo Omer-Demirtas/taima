@@ -16,12 +16,13 @@ public class UpdateJobState
     }
 
     public JobTracking updateJobState(String jobName) {
+        /*
         JobTracking qrtzJobStateTracker = qrtzJobStateTrackerService.findFirstByJobName(jobName);
         if (qrtzJobStateTracker == null) {
             JobTracking newQrtzJobStateTracker = new JobTracking();
             newQrtzJobStateTracker.setJobName(jobName);
-            newQrtzJobStateTracker.setLastUpdate(LocalDateTime.now().toString());
-            newQrtzJobStateTracker.setState(JobStateEnum.RUNNING.toString());
+            //newQrtzJobStateTracker.setLastUpdate(LocalDateTime.now().toString());
+            //newQrtzJobStateTracker.setState(JobStateEnum.RUNNING.toString());
             qrtzJobStateTrackerService.save(newQrtzJobStateTracker);
             qrtzJobStateTracker = qrtzJobStateTrackerService.findFirstByJobName(jobName);
         } else {
@@ -33,6 +34,9 @@ public class UpdateJobState
             qrtzJobStateTrackerService.save(qrtzJobStateTracker);
         }
         return qrtzJobStateTracker;
+
+         */
+        return null;
     }
 
 }
