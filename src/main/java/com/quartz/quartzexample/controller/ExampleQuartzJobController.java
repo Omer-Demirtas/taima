@@ -1,6 +1,6 @@
 package com.quartz.quartzexample.controller;
 
-import com.quartz.quartzexample.DTO.ScheduleDTO;
+import com.quartz.quartzexample.dto.ScheduleDTO;
 import com.quartz.quartzexample.job.ExampleJob;
 import com.quartz.quartzexample.service.QrtzJobStateTrackerService;
 import com.quartz.quartzexample.service.ScheduleService;

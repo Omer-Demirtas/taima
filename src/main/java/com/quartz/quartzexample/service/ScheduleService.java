@@ -1,6 +1,6 @@
 package com.quartz.quartzexample.service;
 
-import com.quartz.quartzexample.DTO.ScheduleDTO;
+import com.quartz.quartzexample.dto.ScheduleDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 

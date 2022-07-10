@@ -1,4 +1,4 @@
-package com.quartz.quartzexample.DTO;
+package com.quartz.quartzexample.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.quartz.quartzexample.model.QrtzJobStateTracker;

@@ -1,6 +1,6 @@
 package com.quartz.quartzexample.service.impl;
 
-import com.quartz.quartzexample.DTO.QrtzJobStateTrackerDTO;
+import com.quartz.quartzexample.dto.QrtzJobStateTrackerDTO;
 import com.quartz.quartzexample.model.QrtzJobStateTracker;
 import com.quartz.quartzexample.repository.QrtzJobStateTrackerRepository;
 import com.quartz.quartzexample.service.QrtzJobStateTrackerService;

@@ -1,7 +1,7 @@
 package com.quartz.quartzexample.service.impl;
 
 
-import com.quartz.quartzexample.DTO.ScheduleDTO;
+import com.quartz.quartzexample.dto.ScheduleDTO;
 import com.quartz.quartzexample.service.ScheduleService;
 import com.quartz.quartzexample.utils.QuartzUtils;
 import lombok.RequiredArgsConstructor;
