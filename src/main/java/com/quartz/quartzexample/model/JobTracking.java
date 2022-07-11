@@ -11,6 +11,7 @@ import java.util.Date;
 @Table(name = "QRTZ_JOB_TRACKING")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class JobTracking

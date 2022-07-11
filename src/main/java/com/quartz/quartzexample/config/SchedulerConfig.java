@@ -11,7 +11,6 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-@Configuration
 @RequiredArgsConstructor
 public class SchedulerConfig
 {
@@ -36,6 +35,8 @@ public class SchedulerConfig
         //or within a servlet container if the application is not using JTA transactions.
         properties.setProperty("org.quartz.jobStore.class", "org.quartz.impl.jdbcjobstore.JobStoreTX");
         properties.setProperty("org.quartz.jobStore.driverDelegateClass", "org.quartz.impl.jdbcjobstore.StdJDBCDelegate");
+        //properties.setProperty("org.quartz.jobStore.dataSource", "targetDataSource");
+
 
         schedulerFactoryBean.setQuartzProperties(properties);
         schedulerFactoryBean.setDataSource(dataSource);

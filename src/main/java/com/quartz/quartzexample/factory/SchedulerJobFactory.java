@@ -16,7 +16,7 @@ public class SchedulerJobFactory extends SpringBeanJobFactory implements Applica
         beanFactory = context.getAutowireCapableBeanFactory();
     }
 
-    @Override
+        @Override
     protected Object createJobInstance(final TriggerFiredBundle bundle) throws Exception
     {
         final Object job = super.createJobInstance(bundle);
