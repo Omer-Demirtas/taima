@@ -10,14 +10,22 @@ import com.quartz.quartzexample.service.ScheduleService;
 import com.quartz.quartzexample.utils.JobStatus;
 import com.quartz.quartzexample.utils.QuartzConstants;
 import lombok.RequiredArgsConstructor;
+import org.quartz.JobDetail;
+import org.quartz.JobKey;
 import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import static org.quartz.JobKey.jobKey;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,12 +33,6 @@ import java.util.Date;
 public class ExampleQuartzJobController
 {
     private final ScheduleService scheduleService;
-    private final QrtzJobStateTrackerService qrtzJobStateTrackerService;
-
-    private static final String triggerNameExampleJob = "example-job-trigger-name";
-    private static final String triggerGroupExampleJob = "example-job-triggers";
-    private static final String jobNameExampleJob = "example-job-job-name";
-    private static final String jobGroupExampleJob = "example-job-jobs";
 
     @PostMapping("/create/cron/{name}")
     public ResponseEntity<QuartzJobDTO> createWithCron(@RequestBody QuartzTriggerDTO trigger, @PathVariable("name") String name)
@@ -42,9 +44,9 @@ public class ExampleQuartzJobController
         return ResponseEntity.ok(scheduleService.createJob(jobDTO, jobDTO.getJobClass()));
     }
 
-    @GetMapping("/getUpdateJobState")
-    public ResponseEntity<?> getUpdateJobState() {
-        return ResponseEntity.ok(qrtzJobStateTrackerService.getUpdateJobState(jobNameExampleJob));
+    @GetMapping("/job-details")
+    public ResponseEntity<List<QuartzJobDTO>> createWithCron()
+    {
+        return ResponseEntity.ok(scheduleService.findAllJobs());
     }
-
 }
