@@ -1,11 +1,14 @@
 package com.quartz.quartzexample.controller;
 
+import com.quartz.quartzexample.dto.QuartzJobDTO;
+import com.quartz.quartzexample.dto.QuartzTriggerDTO;
 import com.quartz.quartzexample.dto.ScheduleDTO;
 import com.quartz.quartzexample.job.ExampleJob;
 import com.quartz.quartzexample.model.JobTracking;
 import com.quartz.quartzexample.service.QrtzJobStateTrackerService;
 import com.quartz.quartzexample.service.ScheduleService;
 import com.quartz.quartzexample.utils.JobStatus;
+import com.quartz.quartzexample.utils.QuartzConstants;
 import lombok.RequiredArgsConstructor;
 import org.quartz.SchedulerException;
 import org.springframework.http.ResponseEntity;
@@ -29,53 +32,14 @@ public class ExampleQuartzJobController
     private static final String jobNameExampleJob = "example-job-job-name";
     private static final String jobGroupExampleJob = "example-job-jobs";
 
-    @GetMapping("/test")
-    public Boolean example()
+    @PostMapping("/create/cron/{name}")
+    public ResponseEntity<QuartzJobDTO> createWithCron(@RequestBody QuartzTriggerDTO trigger, @PathVariable("name") String name)
     {
-        qrtzJobStateTrackerService.save(
-            new JobTracking()
-                    .builder()
-                    .jobName(LocalDateTime.now().toString())
-                    .triggerName(LocalDateTime.now().toString())
-                    .description(LocalDateTime.now().toString())
-                    .lastFinishAt(new Date())
-                    .lastStartAt(new Date())
-                    .jobStatus(JobStatus.SUCCESS)
-                    .build()
-        );
-        return true;
-    }
+        QuartzJobDTO jobDTO = QuartzConstants.JOBS.get(name);
 
-    @GetMapping("/delete")
-    public Boolean deleteAll() throws SchedulerException {
-        return scheduleService.removeAllJob();
-    }
+        jobDTO.getTrigger().setCron(trigger.getCron());
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createJob()
-    {
-        return ResponseEntity.ok(
-                scheduleService.createWithCron(
-                        jobNameExampleJob,
-                        jobGroupExampleJob,
-                        "Barsan Delete Old Data Service Job",
-                        ExampleJob.class,
-                        triggerNameExampleJob,
-                        triggerGroupExampleJob,
-                        "Barsan Delete Old Data Service Trigger",
-                        "0/1 0 0 ? * * *"
-                )
-        );
-    }
-
-    @PostMapping("/reschedule/withHour")
-    public ResponseEntity<?> rescheduleByHour(@RequestBody ScheduleDTO scheduleDTO) {
-        return scheduleService.rescheduleByHour(scheduleDTO, triggerNameExampleJob, triggerGroupExampleJob, jobNameExampleJob, jobGroupExampleJob);
-    }
-
-    @PostMapping("/reschedule/withCron")
-    public ResponseEntity<?> rescheduleByCron(@RequestBody ScheduleDTO scheduleDTO) {
-        return scheduleService.rescheduleByCron(scheduleDTO, triggerNameExampleJob, triggerGroupExampleJob, jobNameExampleJob, jobGroupExampleJob);
+        return ResponseEntity.ok(scheduleService.createJob(jobDTO, jobDTO.getJobClass()));
     }
 
     @GetMapping("/getUpdateJobState")
@@ -83,21 +47,4 @@ public class ExampleQuartzJobController
         return ResponseEntity.ok(qrtzJobStateTrackerService.getUpdateJobState(jobNameExampleJob));
     }
 
-    @GetMapping("/getAllRunning")
-    public ResponseEntity<?> getAllRunningJobs()
-    {
-        return ResponseEntity.ok(scheduleService.getAllRunningTimers());
-    }
-
-    @PostMapping("/pauseJob")
-    public ResponseEntity<Boolean> pauseJob()
-    {
-        return ResponseEntity.ok(scheduleService.pauseJob(jobNameExampleJob, jobGroupExampleJob));
-    }
-
-    @PostMapping("/resumeJob")
-    public ResponseEntity<Boolean> resumeJob()
-    {
-        return ResponseEntity.ok(scheduleService.resumeJob(jobNameExampleJob, jobGroupExampleJob));
-    }
 }
