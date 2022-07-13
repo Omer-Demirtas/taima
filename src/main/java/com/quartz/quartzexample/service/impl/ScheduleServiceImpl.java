@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -20,13 +21,53 @@ import java.util.stream.Collectors;
 
 import static org.quartz.JobKey.jobKey;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
-@Log4j2
 public class ScheduleServiceImpl implements ScheduleService
 {
     private final Scheduler scheduler;
     private final QuartzUtils quartzUtils;
+
+    @Override
+    public Boolean createJob()
+    {
+        JobDetail jobDetail = descriptor.buildJobDetail(jobClass);
+        Trigger trigger = descriptor.getTrigger().buildTrigger();
+        log.info("About to save job with key - {}", jobDetail.getKey());
+        try
+        {
+            scheduler.scheduleJob(jobDetail, trigger);
+            log.info("Job with key - {} saved successfully", jobDetail.getKey());
+        }
+        catch (Exception e)
+        {
+            log.error("Could not save job with key - {} due to error - {}", jobDetail.getKey(), e.getLocalizedMessage());
+            //throw new IllegalArgumentException(e.getLocalizedMessage());
+            return null;
+        }
+        return descriptor;
+    }
+
+    @Override
+    public List<String> findAllJobs()
+    {
+        List<JobDTO> jobList = new ArrayList<>();
+        try {
+            for (String groupName : scheduler.getJobGroupNames()) {
+                for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
+                    String name = jobKey.getName();
+                    String group = jobKey.getGroup();
+                    JobDetail jobDetail = scheduler.getJobDetail(jobKey(name, group));
+                    List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobDetail.getKey());
+                    jobList.add(JobDTO.buildJobDTO(jobDetail, triggers, scheduler));
+                }
+            }
+        } catch (SchedulerException e) {
+            log.error("Could not find all jobs due to error - {}", e.getLocalizedMessage());
+        }
+        return jobList;
+    }
 
     @Override
     public List<String> getAllRunningTimers()
@@ -155,13 +196,30 @@ public class ScheduleServiceImpl implements ScheduleService
             JobDetail jobDetail = quartzUtils.buildJobDetail(jobName, jobGroup, jobDescription, jobClass);
             Trigger trigger = quartzUtils.buildTrigger(jobDetail, triggerName, triggerGroup, triggerDescription, cron);
             scheduler.scheduleJob(jobDetail, trigger);
-
+            scheduler.start();
             log.info("Job created with name {}", jobName);
             return true;
         } catch (SchedulerException e) {
             log.error(e.getMessage(), e);
             return false;
         }
+    }
+
+    @Override
+    public Boolean removeAllJob() throws SchedulerException
+    {
+        for (String groupName : scheduler.getJobGroupNames())
+        {
+            for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
+
+                String jobName = jobKey.getName();
+                String jobGroup = jobKey.getGroup();
+                scheduler.deleteJob(new JobKey(jobName, jobGroup));
+
+            }
+
+        }
+        return true;
     }
 
     private String createCronFromHour(int hour) {

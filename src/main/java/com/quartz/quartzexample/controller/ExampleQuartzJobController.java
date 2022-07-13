@@ -7,6 +7,7 @@ import com.quartz.quartzexample.service.QrtzJobStateTrackerService;
 import com.quartz.quartzexample.service.ScheduleService;
 import com.quartz.quartzexample.utils.JobStatus;
 import lombok.RequiredArgsConstructor;
+import org.quartz.SchedulerException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,6 +45,12 @@ public class ExampleQuartzJobController
         );
         return true;
     }
+
+    @GetMapping("/delete")
+    public Boolean deleteAll() throws SchedulerException {
+        return scheduleService.removeAllJob();
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> createJob()
     {
@@ -56,7 +63,7 @@ public class ExampleQuartzJobController
                         triggerNameExampleJob,
                         triggerGroupExampleJob,
                         "Barsan Delete Old Data Service Trigger",
-                        "0 0 0 ? * * *"
+                        "0/1 0 0 ? * * *"
                 )
         );
     }

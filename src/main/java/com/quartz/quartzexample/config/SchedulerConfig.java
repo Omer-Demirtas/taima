@@ -1,8 +1,8 @@
 package com.quartz.quartzexample.config;
 
-import com.quartz.quartzexample.factory.SchedulerJobFactory;
+import com.quartz.quartzexample.factory.AutoWiringSpringBeanJobFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.quartz.QuartzProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,18 +11,24 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-@RequiredArgsConstructor
+//@Configuration
 public class SchedulerConfig
 {
-    private final DataSource dataSource;
+    @Autowired
+    private DataSource dataSource;
 
     @Bean
     public SchedulerFactoryBean schedulerFactoryBean(ApplicationContext applicationContext) {
+        //Quartz Documentation and Github Information
+        //https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#scheduling-quartz
+        //http://www.quartz-scheduler.org/documentation/
+        //https://github.com/quartz-scheduler/quartz/blob/d42fb7770f287afbf91f6629d90e7698761ad7d8/quartz-core/src/main/resources/org/quartz/impl/jdbcjobstore/tables_postgres.sql
         SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
-        SchedulerJobFactory jobFactory = new SchedulerJobFactory();
+        AutoWiringSpringBeanJobFactory jobFactory = new AutoWiringSpringBeanJobFactory();
         jobFactory.setApplicationContext(applicationContext);
 
         Properties properties = new Properties();
+        //http://www.quartz-scheduler.org/documentation/quartz-2.1.7/configuration/ConfigJDBCJobStoreClustering.html
         properties.setProperty("org.quartz.jobStore.isClustered", "false");
         //Check in every 3 seconds
         properties.setProperty("org.quartz.jobStore.clusterCheckinInterval", "3000");
@@ -34,16 +40,13 @@ public class SchedulerConfig
         //(such as the addition of a job). JDBCJobStore is appropriate if you are using Quartz in a stand-alone application,
         //or within a servlet container if the application is not using JTA transactions.
         properties.setProperty("org.quartz.jobStore.class", "org.quartz.impl.jdbcjobstore.JobStoreTX");
-        properties.setProperty("org.quartz.jobStore.driverDelegateClass", "org.quartz.impl.jdbcjobstore.StdJDBCDelegate");
-        //properties.setProperty("org.quartz.jobStore.dataSource", "targetDataSource");
-
+        properties.setProperty("org.quartz.jobStore.driverDelegateClass", "org.quartz.impl.jdbcjobstore.PostgreSQLDelegate");
 
         schedulerFactoryBean.setQuartzProperties(properties);
         schedulerFactoryBean.setDataSource(dataSource);
         schedulerFactoryBean.setJobFactory(jobFactory);
         schedulerFactoryBean.setWaitForJobsToCompleteOnShutdown(true);
         schedulerFactoryBean.setApplicationContextSchedulerContextKey("applicationContext");
-        schedulerFactoryBean.setSchedulerName("GalcReplicator-g4");
 
         return schedulerFactoryBean;
     }
