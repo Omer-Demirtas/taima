@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.quartz.JobKey.jobKey;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/quartz/")
@@ -34,4 +32,6 @@ public class QuartzJobController
     {
         return ResponseEntity.ok(scheduleService.findAllJobs());
     }
+
+
 }
