@@ -1,6 +1,7 @@
 package com.quartz.quartzexample.job;
 
 import com.quartz.quartzexample.dto.QuartzJobDTO;
+import com.quartz.quartzexample.utils.QuartzUtils;
 import lombok.extern.log4j.Log4j2;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -22,6 +23,7 @@ public abstract class JobService extends QuartzJobBean
     {
         String jobName = context.getJobDetail().getKey().getName();
         String jobGroup = context.getJobDetail().getKey().getGroup();
+        job = QuartzUtils.getJobDetails(jobName, jobGroup);
 
         log.info("Job start {} {} || at {} ", jobName, jobGroup , LocalDateTime.now());
 

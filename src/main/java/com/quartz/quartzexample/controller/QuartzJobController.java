@@ -3,14 +3,15 @@ package com.quartz.quartzexample.controller;
 import com.quartz.quartzexample.dto.QuartzJobDTO;
 import com.quartz.quartzexample.dto.QuartzTriggerDTO;
 import com.quartz.quartzexample.service.ScheduleService;
-import com.quartz.quartzexample.utils.QuartzConstants;
+import com.quartz.quartzexample.utils.QuartzUtils;
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.asm.Advice;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Log4j2
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/quartz/")
@@ -18,12 +19,21 @@ public class QuartzJobController
 {
     private final ScheduleService scheduleService;
 
-    @PostMapping("/create/cron/{name}")
-    public ResponseEntity<QuartzJobDTO> createWithCron(@RequestBody QuartzTriggerDTO trigger, @PathVariable("name") String name)
+    @PostMapping("/create/cron/{jobName}/{jobGroup}")
+    public ResponseEntity<?> createWithCron(@RequestBody QuartzTriggerDTO trigger, @PathVariable("jobName") String jobName, @PathVariable String jobGroup)
     {
-        QuartzJobDTO jobDTO = QuartzConstants.JOBS.get(name);
+        QuartzJobDTO jobDTO = QuartzUtils.getJobDetails(jobName, jobGroup);
 
-        jobDTO.getTrigger().setCron(trigger.getCron());
+        if(jobDTO == null)
+        {
+            log.info("Hob Not found");
+            return ResponseEntity.internalServerError().body("Job Not found");
+        }
+
+        if(trigger != null)
+        {
+            jobDTO.getTrigger().setCron(trigger.getCron());
+        }
 
         return ResponseEntity.ok(scheduleService.createJob(jobDTO, jobDTO.getJobClass()));
     }
