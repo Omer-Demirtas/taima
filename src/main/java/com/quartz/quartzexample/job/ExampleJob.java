@@ -1,9 +1,6 @@
 package com.quartz.quartzexample.job;
 
-import com.quartz.quartzexample.model.JobTracking;
-import com.quartz.quartzexample.service.ExampleJobService;
 import com.quartz.quartzexample.service.QrtzJobStateTrackerService;
-import com.quartz.quartzexample.utils.JobStateEnum;
 import com.quartz.quartzexample.utils.UpdateJobState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -20,7 +17,6 @@ import java.time.LocalDateTime;
 public class ExampleJob extends QuartzJobBean
 {
     private final UpdateJobState updateJobState;
-    private final ExampleJobService exampleJobService;
     private final QrtzJobStateTrackerService qrtzJobStateTrackerService;
 
     //private final BarsanServiceDeleteOldData barsanServiceDeleteOldData;
