@@ -2,36 +2,36 @@ package com.quartz.quartzexample.service.impl;
 
 import com.quartz.quartzexample.dto.QrtzJobStateTrackerDTO;
 import com.quartz.quartzexample.model.JobTracking;
-import com.quartz.quartzexample.repository.QrtzJobStateTrackerRepository;
-import com.quartz.quartzexample.service.QrtzJobStateTrackerService;
+import com.quartz.quartzexample.repository.QuartzJobTrackingRepository;
+import com.quartz.quartzexample.service.QuartzJobTrackingService;
 import com.quartz.quartzexample.utils.Constants;
 import com.quartz.quartzexample.utils.DateFormatConverter;
 import org.springframework.stereotype.Service;
 
 @Service
-public class QrtzJobStateTrackerServiceImpl implements QrtzJobStateTrackerService
+public class QuartzJobTrackingServiceImpl implements QuartzJobTrackingService
 {
-    private final QrtzJobStateTrackerRepository qrtzJobStateTrackerRepository;
+    private final QuartzJobTrackingRepository quartzJobTrackingRepository;
     private final DateFormatConverter dateFormatConverter;
 
-    public QrtzJobStateTrackerServiceImpl(QrtzJobStateTrackerRepository qrtzJobStateTrackerRepository, DateFormatConverter dateFormatConverter) {
-        this.qrtzJobStateTrackerRepository = qrtzJobStateTrackerRepository;
+    public QuartzJobTrackingServiceImpl(QuartzJobTrackingRepository quartzJobTrackingRepository, DateFormatConverter dateFormatConverter) {
+        this.quartzJobTrackingRepository = quartzJobTrackingRepository;
         this.dateFormatConverter = dateFormatConverter;
     }
 
     @Override
     public JobTracking findFirstByJobName(String jobName) {
-        return qrtzJobStateTrackerRepository.findFirstByJobName(jobName);
+        return quartzJobTrackingRepository.findFirstByJobName(jobName);
     }
 
     @Override
     public JobTracking save(JobTracking qrtzJobStateTracker) {
-        return qrtzJobStateTrackerRepository.save(qrtzJobStateTracker);
+        return quartzJobTrackingRepository.save(qrtzJobStateTracker);
     }
 
     @Override
     public QrtzJobStateTrackerDTO getUpdateJobState() {
-        JobTracking qrtzJobStateTracker = qrtzJobStateTrackerRepository.findFirstByJobName(Constants.jobNameUpdate);
+        JobTracking qrtzJobStateTracker = quartzJobTrackingRepository.findFirstByJobName(Constants.jobNameUpdate);
 
         if (qrtzJobStateTracker == null)
             throw new IllegalArgumentException("update job can not found");
@@ -42,7 +42,7 @@ public class QrtzJobStateTrackerServiceImpl implements QrtzJobStateTrackerServic
 
     @Override
     public QrtzJobStateTrackerDTO getUpdateJobState(String jobName) {
-        JobTracking qrtzJobStateTracker = qrtzJobStateTrackerRepository.findFirstByJobName(jobName);
+        JobTracking qrtzJobStateTracker = quartzJobTrackingRepository.findFirstByJobName(jobName);
 
         if (qrtzJobStateTracker == null)
             throw new IllegalArgumentException("update job can not found with name " + jobName);

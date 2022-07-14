@@ -1,17 +1,15 @@
 package com.quartz.quartzexample.utils;
 
 import com.quartz.quartzexample.model.JobTracking;
-import com.quartz.quartzexample.service.QrtzJobStateTrackerService;
+import com.quartz.quartzexample.service.QuartzJobTrackingService;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 
 @Component
 public class UpdateJobState
 {
-    private final QrtzJobStateTrackerService qrtzJobStateTrackerService;
+    private final QuartzJobTrackingService qrtzJobStateTrackerService;
 
-    public UpdateJobState(QrtzJobStateTrackerService qrtzJobStateTrackerService) {
+    public UpdateJobState(QuartzJobTrackingService qrtzJobStateTrackerService) {
         this.qrtzJobStateTrackerService = qrtzJobStateTrackerService;
     }
 
