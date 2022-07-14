@@ -5,6 +5,7 @@ import com.quartz.quartzexample.dto.QuartzTriggerDTO;
 import com.quartz.quartzexample.service.ScheduleService;
 import com.quartz.quartzexample.utils.QuartzConstants;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.asm.Advice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,5 +34,16 @@ public class QuartzJobController
         return ResponseEntity.ok(scheduleService.findAllJobs());
     }
 
-
+    @DeleteMapping("/{jobName}/{jobGroup}")
+    public ResponseEntity<Boolean> delete(@PathVariable("jobName") String jobName, @PathVariable("jobGroup") String jobGroup)
+    {
+        return ResponseEntity.ok(
+            scheduleService.removeJob(
+                    QuartzJobDTO.builder()
+                            .name(jobName)
+                            .group(jobGroup)
+                            .build()
+            )
+        );
+    }
 }

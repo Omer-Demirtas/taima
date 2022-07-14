@@ -60,4 +60,23 @@ public class ScheduleServiceImpl implements ScheduleService
         }
         return jobList;
     }
+
+    @Override
+    public Boolean removeJob(QuartzJobDTO quartzJobDTO)
+    {
+        try
+        {
+            scheduler.deleteJob(new JobKey(quartzJobDTO.getName(), quartzJobDTO.getGroup()));
+
+            log.info("Job deleted successfully with name {}, group {}", quartzJobDTO.getName(), quartzJobDTO.getGroup());
+
+            return true;
+        }
+        catch (SchedulerException schedulerException)
+        {
+            log.error("Error at deleting Job with name {} - {} {}", quartzJobDTO.getName(), schedulerException.getMessage(), schedulerException.toString());
+
+            return false;
+        }
+    }
 }

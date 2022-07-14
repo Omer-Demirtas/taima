@@ -13,4 +13,6 @@ public interface ScheduleService
     QuartzJobDTO createJob(QuartzJobDTO job, Class jobClass);
 
     List<QuartzJobDTO> findAllJobs();
+
+    Boolean removeJob(QuartzJobDTO quartzJobDTO);
 }
