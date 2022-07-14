@@ -4,19 +4,14 @@ import com.quartz.quartzexample.dto.QrtzJobStateTrackerDTO;
 import com.quartz.quartzexample.model.JobTracking;
 import com.quartz.quartzexample.repository.QuartzJobTrackingRepository;
 import com.quartz.quartzexample.service.QuartzJobTrackingService;
-import com.quartz.quartzexample.utils.DateFormatConverter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class QuartzJobTrackingServiceImpl implements QuartzJobTrackingService
 {
     private final QuartzJobTrackingRepository quartzJobTrackingRepository;
-    private final DateFormatConverter dateFormatConverter;
-
-    public QuartzJobTrackingServiceImpl(QuartzJobTrackingRepository quartzJobTrackingRepository, DateFormatConverter dateFormatConverter) {
-        this.quartzJobTrackingRepository = quartzJobTrackingRepository;
-        this.dateFormatConverter = dateFormatConverter;
-    }
 
     @Override
     public JobTracking findFirstByJobName(String jobName) {
