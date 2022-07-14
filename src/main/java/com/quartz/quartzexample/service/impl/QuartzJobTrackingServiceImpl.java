@@ -4,7 +4,6 @@ import com.quartz.quartzexample.dto.QrtzJobStateTrackerDTO;
 import com.quartz.quartzexample.model.JobTracking;
 import com.quartz.quartzexample.repository.QuartzJobTrackingRepository;
 import com.quartz.quartzexample.service.QuartzJobTrackingService;
-import com.quartz.quartzexample.utils.Constants;
 import com.quartz.quartzexample.utils.DateFormatConverter;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +30,7 @@ public class QuartzJobTrackingServiceImpl implements QuartzJobTrackingService
 
     @Override
     public QrtzJobStateTrackerDTO getUpdateJobState() {
+        /*
         JobTracking qrtzJobStateTracker = quartzJobTrackingRepository.findFirstByJobName(Constants.jobNameUpdate);
 
         if (qrtzJobStateTracker == null)
@@ -38,6 +38,9 @@ public class QuartzJobTrackingServiceImpl implements QuartzJobTrackingService
 
         formatProcess(qrtzJobStateTracker);
         return new QrtzJobStateTrackerDTO(qrtzJobStateTracker);
+
+         */
+        return null;
     }
 
     @Override

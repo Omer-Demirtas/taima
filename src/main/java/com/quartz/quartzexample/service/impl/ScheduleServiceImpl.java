@@ -2,23 +2,15 @@ package com.quartz.quartzexample.service.impl;
 
 
 import com.quartz.quartzexample.dto.QuartzJobDTO;
-import com.quartz.quartzexample.dto.ScheduleDTO;
 import com.quartz.quartzexample.service.ScheduleService;
-import com.quartz.quartzexample.utils.QuartzUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static org.quartz.JobKey.jobKey;
 
@@ -28,7 +20,6 @@ import static org.quartz.JobKey.jobKey;
 public class ScheduleServiceImpl implements ScheduleService
 {
     private final Scheduler scheduler;
-    private final QuartzUtils quartzUtils;
 
     @Override
     public QuartzJobDTO createJob(QuartzJobDTO job, Class jobClass)

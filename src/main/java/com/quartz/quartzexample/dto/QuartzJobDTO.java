@@ -1,7 +1,6 @@
 package com.quartz.quartzexample.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.quartz.quartzexample.utils.QuartzUtils;
 import lombok.*;
 import org.quartz.*;
 import org.springframework.scheduling.quartz.QuartzJobBean;
