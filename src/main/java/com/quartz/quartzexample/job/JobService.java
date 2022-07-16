@@ -2,12 +2,12 @@ package com.quartz.quartzexample.job;
 
 import com.quartz.quartzexample.dto.QuartzJobDTO;
 import com.quartz.quartzexample.model.JobTracking;
+import com.quartz.quartzexample.service.QuartzJobTrackingService;
 import com.quartz.quartzexample.utils.JobStatus;
 import com.quartz.quartzexample.utils.QuartzUtils;
 import lombok.extern.log4j.Log4j2;
-import org.apache.tomcat.jni.Local;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +18,8 @@ import java.time.LocalDateTime;
 public abstract class JobService extends QuartzJobBean
 {
     public QuartzJobDTO job;
+    @Autowired
+    private QuartzJobTrackingService jobTrackingService;
 
     public abstract String process();
 
@@ -49,6 +51,7 @@ public abstract class JobService extends QuartzJobBean
         LocalDateTime finishAt = LocalDateTime.now();
         JobTracking tracking = new JobTracking(job, jobStatus, description, startAt, finishAt);
 
+        jobTrackingService.save(tracking);
         log.info("Job finish at {}", finishAt);
     }
 }
