@@ -17,28 +17,25 @@ import java.time.LocalDateTime;
 public class JobTracking
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "JOB_NAME", nullable = false)
+    @Column(name = "JOB_NAME", nullable = false, length = 50)
     private String jobName;
 
-    @Column(name = "JOB_GROUP", nullable = false)
+    @Column(name = "JOB_GROUP", nullable = false, length = 50)
     private String jobGroup;
 
-    @Column(name = "TRIGGER_NAME")
+    @Column(name = "TRIGGER_NAME", nullable = false, length = 50)
     private String triggerName;
 
     @Column(name = "LAST_START_AT", nullable = false)
     private LocalDateTime lastStartAt;
 
-    @Column(name = "LAST_FINISH_AT")
+    @Column(name = "LAST_FINISH_AT", nullable = false)
     private LocalDateTime lastFinishAt;
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = "DESCRIPTION", length = 200)
     private String description;
 
-    @Column(name = "JOB_STATUS")
+    @Column(name = "JOB_STATUS", nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private JobStatus jobStatus;
 
