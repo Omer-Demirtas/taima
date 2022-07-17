@@ -127,10 +127,24 @@ public class ScheduleServiceImpl implements ScheduleService
     {
         try {
             scheduler.pauseJob(jobKey(jobName, jobGroup));
-            log.info("Paused job with key - {}.{}", jobName, jobGroup);
+            log.info("Paused job with key | {} | {}", jobName, jobGroup);
             return true;
         } catch (SchedulerException e) {
             log.error("Could not pause job with key - {}.{} due to error - {}", jobName, jobGroup, e.getLocalizedMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public Boolean resume(String jobName, String jobGroup) {
+        try
+        {
+            scheduler.resumeJob(jobKey(jobName, jobGroup));
+            log.info("Resumed job with key - {}.{}", jobName, jobGroup);
+            return true;
+        }
+        catch (SchedulerException e) {
+            log.error("Could not resume job with key - {}.{} due to error - {}", jobName, jobGroup, e.getLocalizedMessage());
             return false;
         }
     }

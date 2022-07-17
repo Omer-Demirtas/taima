@@ -24,4 +24,6 @@ public interface ScheduleService
     Boolean reScheduleWithCron(String jobName, String jobGroup, String cron);
 
     Boolean pause(String jobName, String jobGroup);
+
+    Boolean resume(String jobName, String jobGroup);
 }
