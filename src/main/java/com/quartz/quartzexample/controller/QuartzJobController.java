@@ -22,7 +22,7 @@ public class QuartzJobController
 {
     private final ScheduleService scheduleService;
 
-    @PostMapping("/create/cron/{jobName}/{jobGroup}")
+    @PostMapping("/cron/{jobName}/{jobGroup}")
     public ResponseEntity<?> createWithCron(@RequestBody QuartzTriggerDTO trigger, @PathVariable("jobName") String jobName, @PathVariable String jobGroup)
     {
         QuartzJobDTO jobDTO = QuartzUtils.getJobDetails(jobName, jobGroup);
@@ -39,6 +39,12 @@ public class QuartzJobController
         }
 
         return ResponseEntity.ok(scheduleService.createJob(jobDTO, jobDTO.getJobClass()));
+    }
+
+    @PutMapping("/cron/{jobName}/{jobGroup}")
+    public ResponseEntity<?> updateWithCron(@RequestBody QuartzTriggerDTO trigger, @PathVariable("jobName") String jobName, @PathVariable("jobGroup") String jobGroup)
+    {
+        return null;
     }
 
     @GetMapping("/job-details")
@@ -61,8 +67,14 @@ public class QuartzJobController
     }
 
     @GetMapping("/tracking")
-    public ResponseEntity<Set<JobTrackingDTO>> getJobTracking()
+    public ResponseEntity<Set<JobTrackingDTO>> getAllJobTracking()
     {
         return ResponseEntity.ok(scheduleService.getJobTracking());
+    }
+
+    @GetMapping("/tracking/{jobName}/{jobGroup}")
+    public ResponseEntity<JobTrackingDTO> getJobTracking(@PathVariable String jobName, @PathVariable String jobGroup)
+    {
+        return null;
     }
 }
