@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class QrtzJobStateTrackerDTO {
+public class JobTrackingDTO {
 
     private String jobName;
 
@@ -18,7 +18,7 @@ public class QrtzJobStateTrackerDTO {
 
     private String lastUpdate;
 
-    public QrtzJobStateTrackerDTO(JobTracking qrtzJobStateTracker) {
+    public JobTrackingDTO(JobTracking qrtzJobStateTracker) {
         this.jobName = qrtzJobStateTracker.getJobName();
         //this.state = qrtzJobStateTracker.getState();
         //this.lastUpdate = qrtzJobStateTracker.getLastUpdate();
