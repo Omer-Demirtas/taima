@@ -1,7 +1,10 @@
 package com.quartz.quartzexample.service.impl;
 
 
+import com.quartz.quartzexample.dto.JobTrackingDTO;
 import com.quartz.quartzexample.dto.QuartzJobDTO;
+import com.quartz.quartzexample.model.JobTracking;
+import com.quartz.quartzexample.service.QuartzJobTrackingService;
 import com.quartz.quartzexample.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static org.quartz.JobKey.jobKey;
 
@@ -20,6 +24,7 @@ import static org.quartz.JobKey.jobKey;
 public class ScheduleServiceImpl implements ScheduleService
 {
     private final Scheduler scheduler;
+    private final QuartzJobTrackingService jobTrackingService;
 
     @Override
     public QuartzJobDTO createJob(QuartzJobDTO job, Class jobClass)
@@ -78,5 +83,10 @@ public class ScheduleServiceImpl implements ScheduleService
 
             return false;
         }
+    }
+
+    @Override
+    public Set<JobTrackingDTO> getJobTracking() {
+        return jobTrackingService.getAllJobTracking();
     }
 }

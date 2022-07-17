@@ -2,6 +2,7 @@ package com.quartz.quartzexample.controller;
 
 import com.quartz.quartzexample.dto.QuartzJobDTO;
 import com.quartz.quartzexample.dto.QuartzTriggerDTO;
+import com.quartz.quartzexample.model.JobTracking;
 import com.quartz.quartzexample.service.ScheduleService;
 import com.quartz.quartzexample.utils.QuartzUtils;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Log4j2
 @RestController
@@ -55,5 +57,11 @@ public class QuartzJobController
                             .build()
             )
         );
+    }
+
+    @GetMapping("/tracking")
+    public ResponseEntity<Set<JobTracking>> getJobTracking()
+    {
+        return ResponseEntity.ok(scheduleService.getJobTracking());
     }
 }
