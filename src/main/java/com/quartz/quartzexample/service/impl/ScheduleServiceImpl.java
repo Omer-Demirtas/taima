@@ -121,4 +121,17 @@ public class ScheduleServiceImpl implements ScheduleService
         log.info("SchedulerService rescheduleByCron method finished successfully");
         return true;
     }
+
+    @Override
+    public Boolean pause(String jobName, String jobGroup)
+    {
+        try {
+            scheduler.pauseJob(jobKey(jobName, jobGroup));
+            log.info("Paused job with key - {}.{}", jobName, jobGroup);
+            return true;
+        } catch (SchedulerException e) {
+            log.error("Could not pause job with key - {}.{} due to error - {}", jobName, jobGroup, e.getLocalizedMessage());
+            return false;
+        }
+    }
 }

@@ -22,4 +22,6 @@ public interface ScheduleService
     Set<JobTrackingDTO> getJobTracking();
 
     Boolean reScheduleWithCron(String jobName, String jobGroup, String cron);
+
+    Boolean pause(String jobName, String jobGroup);
 }

@@ -47,6 +47,12 @@ public class QuartzJobController
         return ResponseEntity.ok(scheduleService.reScheduleWithCron(jobName, jobGroup, trigger.getCron()));
     }
 
+    @PostMapping("/pause/{jobName}/{jobGroup}")
+    public ResponseEntity<?> pauseJob(@PathVariable("jobName") String jobName, @PathVariable("jobGroup") String jobGroup)
+    {
+        return ResponseEntity.ok(scheduleService.pause(jobName, jobGroup));
+    }
+
     @GetMapping("/job-details")
     public ResponseEntity<List<QuartzJobDTO>> createWithCron()
     {
@@ -77,4 +83,5 @@ public class QuartzJobController
     {
         return null;
     }
+
 }
