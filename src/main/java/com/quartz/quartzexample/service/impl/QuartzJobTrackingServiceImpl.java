@@ -22,7 +22,7 @@ public class QuartzJobTrackingServiceImpl implements QuartzJobTrackingService
 
     @Override
     public Set<JobTrackingDTO> getAllJobTracking() {
-        return null;
+        return quartzJobTrackingRepository.getAll();
     }
 
 

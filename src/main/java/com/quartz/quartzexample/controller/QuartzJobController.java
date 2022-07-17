@@ -1,5 +1,6 @@
 package com.quartz.quartzexample.controller;
 
+import com.quartz.quartzexample.dto.JobTrackingDTO;
 import com.quartz.quartzexample.dto.QuartzJobDTO;
 import com.quartz.quartzexample.dto.QuartzTriggerDTO;
 import com.quartz.quartzexample.model.JobTracking;
@@ -60,7 +61,7 @@ public class QuartzJobController
     }
 
     @GetMapping("/tracking")
-    public ResponseEntity<Set<JobTracking>> getJobTracking()
+    public ResponseEntity<Set<JobTrackingDTO>> getJobTracking()
     {
         return ResponseEntity.ok(scheduleService.getJobTracking());
     }
