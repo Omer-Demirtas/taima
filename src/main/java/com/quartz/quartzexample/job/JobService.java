@@ -14,12 +14,15 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Log4j2
-@Service
 public abstract class JobService extends QuartzJobBean
 {
     public QuartzJobDTO job;
-    @Autowired
     private QuartzJobTrackingService jobTrackingService;
+
+    @Autowired
+    public final void setJobTrackingService(QuartzJobTrackingService jobTrackingService) {
+        this.jobTrackingService = jobTrackingService;
+    }
 
     public abstract String process();
 
