@@ -1,15 +1,13 @@
 package com.quartz.quartzexample.service;
 
-import com.quartz.quartzexample.dto.QrtzJobStateTrackerDTO;
+import com.quartz.quartzexample.dto.JobTrackingDTO;
 import com.quartz.quartzexample.model.JobTracking;
+
+import java.util.Set;
 
 public interface QuartzJobTrackingService
 {
-    JobTracking findFirstByJobName(String jobName);
+    JobTracking save(JobTracking jobTracking);
 
-    JobTracking save(JobTracking qrtzJobStateTracker);
-
-    QrtzJobStateTrackerDTO getUpdateJobState();
-
-    QrtzJobStateTrackerDTO getUpdateJobState(String jobNameExampleJob);
+    Set<JobTrackingDTO> getAllJobTracking();
 }
