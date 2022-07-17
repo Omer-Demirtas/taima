@@ -20,4 +20,6 @@ public interface ScheduleService
     Boolean removeJob(QuartzJobDTO quartzJobDTO);
 
     Set<JobTrackingDTO> getJobTracking();
+
+    Boolean reScheduleWithCron(String jobName, String jobGroup, String cron);
 }

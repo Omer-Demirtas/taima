@@ -42,9 +42,9 @@ public class QuartzJobController
     }
 
     @PutMapping("/cron/{jobName}/{jobGroup}")
-    public ResponseEntity<?> updateWithCron(@RequestBody QuartzTriggerDTO trigger, @PathVariable("jobName") String jobName, @PathVariable("jobGroup") String jobGroup)
+    public ResponseEntity<?> reScheduleWithCron(@RequestBody QuartzTriggerDTO trigger, @PathVariable("jobName") String jobName, @PathVariable("jobGroup") String jobGroup)
     {
-        return null;
+        return ResponseEntity.ok(scheduleService.reScheduleWithCron(jobName, jobGroup, trigger.getCron()));
     }
 
     @GetMapping("/job-details")

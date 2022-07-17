@@ -6,6 +6,7 @@ import com.quartz.quartzexample.dto.QuartzJobDTO;
 import com.quartz.quartzexample.model.JobTracking;
 import com.quartz.quartzexample.service.QuartzJobTrackingService;
 import com.quartz.quartzexample.service.ScheduleService;
+import com.quartz.quartzexample.utils.QuartzUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.quartz.*;
@@ -88,5 +89,36 @@ public class ScheduleServiceImpl implements ScheduleService
     @Override
     public Set<JobTrackingDTO> getJobTracking() {
         return jobTrackingService.getAllJobTracking();
+    }
+
+    @Override
+    public Boolean reScheduleWithCron(String jobName, String jobGroup, String cron)
+    {
+        log.info("SchedulerService rescheduleByCron method started");
+
+        QuartzJobDTO jobDTO = QuartzUtils.getJobDetails(jobName, jobGroup);
+        jobDTO.getTrigger().setCron(cron);
+
+        TriggerKey triggerKey = new TriggerKey(jobDTO.getTrigger().getName(), jobDTO.getTrigger().getGroup());
+        JobKey jobKey = new JobKey(jobDTO.getName(), jobDTO.getGroup());
+        try {
+            Trigger trigger = scheduler.getTrigger(triggerKey);
+            JobDetail jobDetail = scheduler.getJobDetail(jobKey);
+
+            Trigger newTrigger = TriggerBuilder.newTrigger()
+                    .forJob(jobDetail)
+                    .withIdentity(trigger.getKey().getName(), trigger.getKey().getGroup())
+                    .withDescription(trigger.getDescription())
+                    .withSchedule(CronScheduleBuilder.cronSchedule(jobDTO.getTrigger().getCron()))
+                    .build();
+            scheduler.rescheduleJob(triggerKey, newTrigger);
+
+        } catch (SchedulerException e) {
+            log.error(e.getMessage(), e);
+            return false;
+        }
+
+        log.info("SchedulerService rescheduleByCron method finished successfully");
+        return true;
     }
 }
