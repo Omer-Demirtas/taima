@@ -17,7 +17,7 @@ import java.util.Set;
 @Log4j2
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/quartz/")
+@RequestMapping("api/job")
 public class QuartzJobController
 {
     private final ScheduleService scheduleService;
