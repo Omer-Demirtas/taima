@@ -35,7 +35,7 @@ public class SchedulerConfig {
 		factory.setDataSource(dataSource);
 		factory.setQuartzProperties(properties);
 		factory.setJobFactory(jobFactory);
-		factory.setSchedulerName("TAIMA");
+		factory.setSchedulerName("taima");
 		return factory;
 	}
 }
