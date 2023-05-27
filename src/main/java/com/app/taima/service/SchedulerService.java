@@ -24,7 +24,7 @@ import static org.quartz.JobKey.jobKey;
 @Log4j2
 @Service
 @RequiredArgsConstructor
-public class JobService {
+public class SchedulerService {
     private final Scheduler scheduler;
     private final SchedulerFactoryBean schedulerFactoryBean;
 
