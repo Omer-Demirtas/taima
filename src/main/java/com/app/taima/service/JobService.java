@@ -7,15 +7,19 @@ import com.app.taima.repository.SchedulerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.quartz.JobKey.jobKey;
 
 @Log4j2
 @Service
@@ -65,6 +69,26 @@ public class JobService {
         scheduleJob.setDescription("i am job number " + scheduleJob.getJobId());
         scheduleJob.setInterfaceName("interface_" + scheduleJob.getJobId());
         log.info(">>>>> jobName = [" + scheduleJob.getJobName() + "]" + " created.");
+    }
+
+    public List<String> findAll() {
+        List<String> jobList = new ArrayList<>();
+
+        try {
+            for (String groupName : scheduler.getJobGroupNames()) {
+                for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
+                    String name = jobKey.getName();
+                    String group = jobKey.getGroup();
+                    JobDetail jobDetail = scheduler.getJobDetail(jobKey(name, group));
+                    List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobDetail.getKey());
+                    jobList.add(name + "-" + group);
+                }
+            }
+        } catch (SchedulerException e) {
+            log.error("Could not find all jobs due to error - {}", e.getLocalizedMessage());
+        }
+
+        return jobList;
     }
 
     private void scheduleNewJob(SchedulerJobInfo jobInfo) {

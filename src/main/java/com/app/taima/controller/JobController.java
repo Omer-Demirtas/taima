@@ -17,7 +17,7 @@ public class JobController {
     private final JobService jobService;
     @GetMapping
     public List<String> getAll() {
-        return jobService.getAllJobList();
+        return jobService.findAll();
     }
 
 
