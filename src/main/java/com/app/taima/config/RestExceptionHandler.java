@@ -2,6 +2,7 @@ package com.app.taima.config;
 
 import com.app.taima.enums.ResponseType;
 import com.app.taima.exception.AlreadyExistsException;
+import com.app.taima.exception.OperationFailedException;
 import com.app.taima.utils.GenericResponse;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -19,6 +20,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AlreadyExistsException.class)
     protected ResponseEntity<GenericResponse<Object>> handleEntityNotFound(AlreadyExistsException ex) {
         GenericResponse<Object> response = new GenericResponse<>(ResponseType.ERROR).code(ex.getMessage() + "AlreadyExist");
+        return new ResponseEntity<>(response, BAD_REQUEST);
+    }
+
+    @ExceptionHandler(OperationFailedException.class)
+    protected ResponseEntity<GenericResponse<Object>> handleOperationFailed(OperationFailedException ex) {
+        GenericResponse<Object> response = new GenericResponse<>(ResponseType.ERROR).code(ex.getMessage() + "OperationFailed");
         return new ResponseEntity<>(response, BAD_REQUEST);
     }
 }
