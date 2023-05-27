@@ -1,0 +1,1 @@
+create table scheduler_job_info (job_id serial not null, cron_expression varchar(255), cron_job boolean, description varchar(255), interface_name varchar(255), job_class varchar(255), job_group varchar(255), job_name varchar(255), job_status varchar(255), repeat_time int8, primary key (job_id))
