@@ -1,6 +1,7 @@
 package com.app.taima.controller;
 
 import com.app.taima.dto.JobDTO;
+import com.app.taima.service.SchedulerService;
 import com.app.taima.utils.GenericResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,7 @@ import java.util.List;
 @RequestMapping("api/scheduler")
 public class SchedulerController {
 
-    private final com.app.taima.service.SchedulerService schedulerService;
+    private final SchedulerService schedulerService;
     @GetMapping
     public List<JobDTO> getAll() {
         return schedulerService.getAllJob();
@@ -35,5 +36,10 @@ public class SchedulerController {
     @PutMapping("/pause")
     public GenericResponse<Boolean> pause(@RequestBody JobDTO job) {
         return GenericResponse.success(schedulerService.pauseJob(job));
+    }
+
+    @PutMapping("/resume")
+    public GenericResponse<Boolean> resume(@RequestBody JobDTO job) {
+        return GenericResponse.success(schedulerService.resumeJob(job));
     }
 }

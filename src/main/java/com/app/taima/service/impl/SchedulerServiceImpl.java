@@ -80,7 +80,14 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     @Override
     public boolean resumeJob(JobDTO job) {
-        return false;
+        try {
+            scheduler.resumeJob(jobKey(job.getName(), job.getGroup()));
+            log.info("Resumed job with key - {}.{}", job.getName(), job.getGroup());
+            return true;
+        }
+        catch (Exception e) {
+            throw new OperationFailedException("jobResume");
+        }
     }
 
     @Override
@@ -89,7 +96,7 @@ public class SchedulerServiceImpl implements SchedulerService {
             scheduler.pauseJob(jobKey(job.getName(), job.getGroup()));
             log.info("Paused job with key | {} | {}", job.getName(), job.getGroup());
             return true;
-        } catch (SchedulerException e) {
+        } catch (Exception e) {
             log.error(e, e);
 
             throw new OperationFailedException("jobPause");
