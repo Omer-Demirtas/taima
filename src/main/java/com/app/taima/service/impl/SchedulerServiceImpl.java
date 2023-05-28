@@ -86,7 +86,31 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     @Override
     public boolean reScheduleJob(JobDTO job) {
-        return false;
+        log.info("SchedulerService rescheduleByCron method started");
+
+        JobKey jobKey = new JobKey(job.getName(), job.getGroup());
+
+        try {
+            Trigger trigger = scheduler.getTriggersOfJob(jobKey).get(0);
+
+            JobDetail jobDetail = scheduler.getJobDetail(jobKey);
+
+            Trigger newTrigger = TriggerBuilder.newTrigger()
+                    .forJob(jobDetail)
+                    .withIdentity(trigger.getKey().getName(), trigger.getKey().getGroup())
+                    .withDescription(trigger.getDescription())
+                    .withSchedule(CronScheduleBuilder.cronSchedule(job.getCron()))
+                    .build();
+
+            scheduler.rescheduleJob(new TriggerKey(trigger.getKey().getName(), trigger.getKey().getGroup()), newTrigger);
+
+        } catch (SchedulerException e) {
+            log.error(e.getMessage(), e);
+            return false;
+        }
+
+        log.info("SchedulerService rescheduleByCron method finished successfully");
+        return true;
     }
 
     @Override
