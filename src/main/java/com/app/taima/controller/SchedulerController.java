@@ -1,8 +1,6 @@
 package com.app.taima.controller;
 
-import com.app.taima.Entity.SchedulerJobInfo;
 import com.app.taima.dto.JobDTO;
-import com.app.taima.service.SchedulerService;
 import com.app.taima.utils.GenericResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +10,10 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/job")
-public class JobController {
+@RequestMapping("api/scheduler")
+public class SchedulerController {
 
-    private final SchedulerService schedulerService;
+    private final com.app.taima.service.SchedulerService schedulerService;
     @GetMapping
     public List<JobDTO> getAll() {
         return schedulerService.getAllJob();
