@@ -9,6 +9,10 @@ public class JobDTO {
     private String group;
     private String cron;
 
+    private Boolean isCron;
+
+    private Long repeatTime;
+
     public JobDTO(String name, String group) {
         this.name = name;
         this.group = group;

@@ -3,6 +3,8 @@ package com.app.taima.service.impl;
 import com.app.taima.Entity.SchedulerJobInfo;
 import com.app.taima.component.JobScheduleCreator;
 import com.app.taima.dto.JobDTO;
+import com.app.taima.exception.AlreadyExistsException;
+import com.app.taima.exception.OperationFailedException;
 import com.app.taima.job.SampleCronJob;
 import com.app.taima.repository.SchedulerRepository;
 import com.app.taima.service.SchedulerService;
@@ -11,7 +13,6 @@ import lombok.extern.log4j.Log4j2;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -36,44 +37,14 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     private final JobScheduleCreator scheduleCreator;
 
-    public List<String> getAllJobs() {
-        try {
-            log.info("Groups: {}", scheduler.getJobGroupNames());
-            log.info("METADA: {}", scheduler.getMetaData());
-            return scheduler.getCalendarNames();
-        } catch (Exception e) {
-            log.error(e, e);
-            return null;
-        }
-    }
-
-    public List<String> getAllJobList() {
+    private List<String> getAllJobList() {
         return schedulerRepository.findAll().stream().map(schedulerJobInfo -> schedulerJobInfo.getJobName() + schedulerJobInfo.getJobGroup()).collect(Collectors.toList());
     }
 
-    public void createJobasd(SchedulerJobInfo scheduleJob) {
-        if (scheduleJob.getCronExpression().length() > 0) {
-            scheduleJob.setJobClass(SampleCronJob.class.getName());
-            scheduleJob.setCronJob(true);
-        } else {
-            /*
-            scheduleJob.setJobClass(SimpleJob.class.getName());
-            scheduleJob.setCronJob(false);
-            scheduleJob.setRepeatTime((long) 1);
-            */
-        }
-        if (StringUtils.isEmpty(scheduleJob.getJobId())) {
-            log.info("Job Info: {}", scheduleJob);
-            scheduleNewJob(scheduleJob);
-        } else {
-            //updateScheduleJob(scheduleJob);
-        }
-        scheduleJob.setDescription("i am job number " + scheduleJob.getJobId());
-        scheduleJob.setInterfaceName("interface_" + scheduleJob.getJobId());
-        log.info(">>>>> jobName = [" + scheduleJob.getJobName() + "]" + " created.");
-    }
-
     @Override
+    /**
+     * Get all jobs in scheduler
+    */
     public List<JobDTO> getAllJob() {
         List<JobDTO> jobList = new ArrayList<>();
 
@@ -95,8 +66,11 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     @Override
+    /**
+     * Create JOB
+    */
     public boolean createJob(JobDTO job) {
-        return false;
+        return scheduleNewJob(job);
     }
 
     @Override
@@ -116,41 +90,57 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     @Override
     public boolean deleteJob(JobDTO job) {
-        return false;
+        try {
+            scheduler.deleteJob(new JobKey(job.getName(), job.getGroup()));
+
+            log.info("Job deleted successfully with name {}, group {}", job.getName(), job.getGroup());
+            return true;
+        }
+        catch (Exception e) {
+            log.error(e, e);
+
+            throw new OperationFailedException("jobDelete");
+        }
     }
 
-    private void scheduleNewJob(SchedulerJobInfo jobInfo) {
+    private boolean scheduleNewJob(JobDTO job) {
         try {
             Scheduler scheduler = schedulerFactoryBean.getScheduler();
 
             JobDetail jobDetail = JobBuilder
-                    .newJob((Class<? extends QuartzJobBean>) Class.forName(jobInfo.getJobClass()))
-                    .withIdentity(jobInfo.getJobName(), jobInfo.getJobGroup()).build();
-            if (!scheduler.checkExists(jobDetail.getKey())) {
+                    .newJob(SampleCronJob.class)
+                    .withIdentity(job.getName(), job.getGroup()).build();
 
+            if (!scheduler.checkExists(jobDetail.getKey())) {
                 jobDetail = scheduleCreator.createJob(
-                        (Class<? extends QuartzJobBean>) Class.forName(jobInfo.getJobClass()), false, context,
-                        jobInfo.getJobName(), jobInfo.getJobGroup());
+                        SampleCronJob.class,
+                        false,
+                        context,
+                        job.getName(), job.getGroup()
+                );
 
                 Trigger trigger;
-                if (jobInfo.getCronJob()) {
-                    trigger = scheduleCreator.createCronTrigger(jobInfo.getJobName(), new Date(),
-                            jobInfo.getCronExpression(), SimpleTrigger.MISFIRE_INSTRUCTION_FIRE_NOW);
+
+                if (job.getIsCron()) {
+                    trigger = scheduleCreator.createCronTrigger(job.getName(), new Date(),
+                            job.getCron(), SimpleTrigger.MISFIRE_INSTRUCTION_FIRE_NOW);
                 } else {
-                    trigger = scheduleCreator.createSimpleTrigger(jobInfo.getJobName(), new Date(),
-                            jobInfo.getRepeatTime(), SimpleTrigger.MISFIRE_INSTRUCTION_FIRE_NOW);
+                    trigger = scheduleCreator.createSimpleTrigger(job.getName(), new Date(),
+                            job.getRepeatTime(), SimpleTrigger.MISFIRE_INSTRUCTION_FIRE_NOW);
                 }
                 scheduler.scheduleJob(jobDetail, trigger);
-                jobInfo.setJobStatus("SCHEDULED");
-                schedulerRepository.save(jobInfo);
-                log.info(">>>>> jobName = [" + jobInfo.getJobName() + "]" + " scheduled.");
+                //jobInfo.setJobStatus("SCHEDULED");
+                //schedulerRepository.save(jobInfo);
+                return true;
             } else {
                 log.error("scheduleNewJobRequest.jobAlreadyExist");
+                throw new AlreadyExistsException("");
             }
-        } catch (ClassNotFoundException e) {
-            log.error("Class Not Found - {}", jobInfo.getJobClass(), e);
         } catch (SchedulerException e) {
             log.error(e.getMessage(), e);
+            return false;
+        } catch (AlreadyExistsException e) {
+            throw new AlreadyExistsException("job");
         }
     }
 }
