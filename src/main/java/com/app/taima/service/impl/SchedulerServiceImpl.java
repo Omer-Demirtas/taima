@@ -85,10 +85,21 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     @Override
     public boolean pauseJob(JobDTO job) {
-        return false;
+        try {
+            scheduler.pauseJob(jobKey(job.getName(), job.getGroup()));
+            log.info("Paused job with key | {} | {}", job.getName(), job.getGroup());
+            return true;
+        } catch (SchedulerException e) {
+            log.error(e, e);
+
+            throw new OperationFailedException("jobPause");
+        }
     }
 
     @Override
+    /**
+     * Delete job
+     */
     public boolean deleteJob(JobDTO job) {
         try {
             scheduler.deleteJob(new JobKey(job.getName(), job.getGroup()));

@@ -33,4 +33,9 @@ public class JobController {
     public GenericResponse<Boolean> delete(@RequestBody JobDTO job) {
         return GenericResponse.success(schedulerService.deleteJob(job));
     }
+
+    @PutMapping("/pause")
+    public GenericResponse<Boolean> pause(@RequestBody JobDTO job) {
+        return GenericResponse.success(schedulerService.pauseJob(job));
+    }
 }
