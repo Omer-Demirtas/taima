@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.6.2</version>
+		<version>2.7.9</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.quartz</groupId>
-	<artifactId>quartz-example</artifactId>
+	<groupId>com.app</groupId>
+	<artifactId>taima</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>quartz-example</name>
-	<description>This is a tutorial about Spring Quartz</description>
+	<name>taima</name>
+	<description>service scheduler</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
