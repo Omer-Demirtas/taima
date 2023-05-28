@@ -4,6 +4,7 @@ import com.app.taima.Entity.SchedulerJobInfo;
 import com.app.taima.component.JobScheduleCreator;
 import com.app.taima.dto.JobDTO;
 import com.app.taima.exception.AlreadyExistsException;
+import com.app.taima.exception.NotfoundException;
 import com.app.taima.exception.OperationFailedException;
 import com.app.taima.job.SampleCronJob;
 import com.app.taima.repository.SchedulerRepository;
@@ -30,12 +31,22 @@ import static org.quartz.JobKey.jobKey;
 public class SchedulerServiceImpl implements SchedulerService {
     private final Scheduler scheduler;
     private final SchedulerFactoryBean schedulerFactoryBean;
-
     private final SchedulerRepository schedulerRepository;
-
     private final ApplicationContext context;
-
     private final JobScheduleCreator scheduleCreator;
+
+    private void isJobExists(JobDTO job) {
+        try {
+            JobDetail jobDetail = scheduler.getJobDetail(new JobKey(job.getName(), job.getGroup()));
+
+            if (jobDetail == null) {
+                throw new NotfoundException("job");
+            }
+        } catch (Exception e) {
+            log.error(e, e);
+            throw new NotfoundException("job");
+        }
+    }
 
     private List<String> getAllJobList() {
         return schedulerRepository.findAll().stream().map(schedulerJobInfo -> schedulerJobInfo.getJobName() + schedulerJobInfo.getJobGroup()).collect(Collectors.toList());
@@ -80,6 +91,8 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     @Override
     public boolean resumeJob(JobDTO job) {
+        isJobExists(job);
+
         try {
             scheduler.resumeJob(jobKey(job.getName(), job.getGroup()));
             log.info("Resumed job with key - {}.{}", job.getName(), job.getGroup());
@@ -92,6 +105,8 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     @Override
     public boolean pauseJob(JobDTO job) {
+        isJobExists(job);
+
         try {
             scheduler.pauseJob(jobKey(job.getName(), job.getGroup()));
             log.info("Paused job with key | {} | {}", job.getName(), job.getGroup());
@@ -108,6 +123,8 @@ public class SchedulerServiceImpl implements SchedulerService {
      * Delete job
      */
     public boolean deleteJob(JobDTO job) {
+        isJobExists(job);
+
         try {
             scheduler.deleteJob(new JobKey(job.getName(), job.getGroup()));
 
