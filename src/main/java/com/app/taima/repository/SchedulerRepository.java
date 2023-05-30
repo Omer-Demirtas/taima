@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface SchedulerRepository extends JpaRepository<SchedulerJob, Long> {
 
     SchedulerJob findByNameAndGroup(String name, String group);
+
+    void deleteByNameAndGroup(String name, String group);
 }

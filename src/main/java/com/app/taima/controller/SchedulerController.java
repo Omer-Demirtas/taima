@@ -1,6 +1,7 @@
 package com.app.taima.controller;
 
 import com.app.taima.dto.JobDTO;
+import com.app.taima.dto.MultiJobDTO;
 import com.app.taima.service.SchedulerService;
 import com.app.taima.utils.GenericResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +29,8 @@ public class SchedulerController {
     }
 
     @DeleteMapping
-    public GenericResponse<Boolean> delete(@RequestBody JobDTO job) {
-        return GenericResponse.success(schedulerService.deleteJob(job));
+    public GenericResponse<Boolean> delete(@RequestBody MultiJobDTO jobs) {
+        return GenericResponse.success(schedulerService.deleteJob(jobs));
     }
 
     @PutMapping("/pause")

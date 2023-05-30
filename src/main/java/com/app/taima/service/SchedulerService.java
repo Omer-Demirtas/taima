@@ -1,6 +1,7 @@
 package com.app.taima.service;
 
 import com.app.taima.dto.JobDTO;
+import com.app.taima.dto.MultiJobDTO;
 
 import java.util.List;
 
@@ -16,5 +17,5 @@ public interface SchedulerService {
 
     boolean pauseJob(JobDTO job);
 
-    boolean deleteJob(JobDTO job);
+    boolean deleteJob(MultiJobDTO jobs);
 }

@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@ToString
+@ToString(of = { "id", "processType" , "url" })
 @NoArgsConstructor
 @Table(name = "t_process")
 public class Process {

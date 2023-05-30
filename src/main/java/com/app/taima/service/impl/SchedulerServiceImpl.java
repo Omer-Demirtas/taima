@@ -3,6 +3,7 @@ package com.app.taima.service.impl;
 import com.app.taima.Entity.SchedulerJob;
 import com.app.taima.component.JobScheduleCreator;
 import com.app.taima.dto.JobDTO;
+import com.app.taima.dto.MultiJobDTO;
 import com.app.taima.exception.AlreadyExistsException;
 import com.app.taima.exception.NotfoundException;
 import com.app.taima.exception.OperationFailedException;
@@ -19,6 +20,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,11 +38,18 @@ public class SchedulerServiceImpl implements SchedulerService {
     private final JobScheduleCreator scheduleCreator;
     private final SchedulerJobService schedulerJobService;
 
+    private void areJobsExists(MultiJobDTO jobs) {
+        for (JobDTO job : jobs.getJobs()) {
+            isJobExists(job);
+        }
+    }
+
     private void isJobExists(JobDTO job) {
         try {
             JobDetail jobDetail = scheduler.getJobDetail(new JobKey(job.getName(), job.getGroup()));
 
             if (jobDetail == null) {
+                log.info("JOB NOT FOUND WITH {} {}", job.getName(), job.getGroup());
                 throw new NotfoundException("job");
             }
         } catch (Exception e) {
@@ -73,10 +82,11 @@ public class SchedulerServiceImpl implements SchedulerService {
         return jobList;
     }
 
-    @Override
     /**
      * Create JOB
     */
+    @Override
+    @Transactional
     public boolean createJob(JobDTO job) {
         return scheduleNewJob(job);
     }
@@ -139,17 +149,22 @@ public class SchedulerServiceImpl implements SchedulerService {
         }
     }
 
-    @Override
     /**
      * Delete job
      */
-    public boolean deleteJob(JobDTO job) {
-        isJobExists(job);
+    @Override
+    @Transactional
+    public boolean deleteJob(MultiJobDTO jobs) {
+        areJobsExists(jobs);
 
         try {
-            scheduler.deleteJob(new JobKey(job.getName(), job.getGroup()));
+            for (JobDTO job : jobs.getJobs()) {
+                schedulerJobService.delete(job.getName(), job.getGroup());
+                scheduler.deleteJob(new JobKey(job.getName(), job.getGroup()));
 
-            log.info("Job deleted successfully with name {}, group {}", job.getName(), job.getGroup());
+                log.info("Job deleted successfully with name {}, group {}", job.getName(), job.getGroup());
+            }
+
             return true;
         }
         catch (Exception e) {
@@ -163,6 +178,8 @@ public class SchedulerServiceImpl implements SchedulerService {
     private boolean scheduleNewJob(JobDTO job) {
         try {
             Scheduler scheduler = schedulerFactoryBean.getScheduler();
+
+            schedulerJobService.save(job);
 
             JobDetail jobDetail = JobBuilder
                     .newJob(SampleCronJob.class)
@@ -185,9 +202,9 @@ public class SchedulerServiceImpl implements SchedulerService {
                     trigger = scheduleCreator.createSimpleTrigger(job.getName(), new Date(),
                             job.getRepeatTime(), SimpleTrigger.MISFIRE_INSTRUCTION_FIRE_NOW);
                 }
+
                 scheduler.scheduleJob(jobDetail, trigger);
 
-                schedulerJobService.save(job);
                 return true;
             } else {
                 log.error("scheduleNewJobRequest.jobAlreadyExist");
