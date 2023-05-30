@@ -1,6 +1,7 @@
 package com.app.taima.Entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -11,12 +12,13 @@ import java.util.List;
 @Setter
 @Entity
 @ToString
+@NoArgsConstructor
 @Table(name = "t_scheduler_job")
 public class SchedulerJob {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
     @Column(name = "job_name")
     private String name;
     @Column(name = "job_group")
@@ -29,6 +31,6 @@ public class SchedulerJob {
     @Column(name = "is_cron")
     private Boolean isCron;
 
-    @OneToMany
+    @OneToMany(mappedBy = "job", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Process> processes;
 }

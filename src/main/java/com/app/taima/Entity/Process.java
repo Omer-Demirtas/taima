@@ -4,12 +4,14 @@ import com.app.taima.enums.ProcessType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @Table(name = "t_process")
 public class Process {
@@ -26,6 +28,6 @@ public class Process {
     private String url;
 
     @ManyToOne
-    @JoinColumn(name = "job_id")
+    @JoinColumn(name = "job_id", referencedColumnName = "id")
     private SchedulerJob job;
 }
