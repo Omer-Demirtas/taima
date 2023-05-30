@@ -23,4 +23,9 @@ public class SchedulerJobServiceImpl implements SchedulerJobService {
         schedulerJob.getProcesses().forEach(process -> process.setJob(schedulerJob));
         schedulerRepository.save(schedulerJob);
     }
+
+    @Override
+    public void delete(String name, String group) {
+        schedulerRepository.deleteByNameAndGroup(name, group);
+    }
 }

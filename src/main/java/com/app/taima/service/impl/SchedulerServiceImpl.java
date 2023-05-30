@@ -20,6 +20,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -81,10 +82,11 @@ public class SchedulerServiceImpl implements SchedulerService {
         return jobList;
     }
 
-    @Override
     /**
      * Create JOB
     */
+    @Override
+    @Transactional
     public boolean createJob(JobDTO job) {
         return scheduleNewJob(job);
     }
@@ -147,15 +149,17 @@ public class SchedulerServiceImpl implements SchedulerService {
         }
     }
 
-    @Override
     /**
      * Delete job
      */
+    @Override
+    @Transactional
     public boolean deleteJob(MultiJobDTO jobs) {
         areJobsExists(jobs);
 
         try {
             for (JobDTO job : jobs.getJobs()) {
+                schedulerJobService.delete(job.getName(), job.getGroup());
                 scheduler.deleteJob(new JobKey(job.getName(), job.getGroup()));
 
                 log.info("Job deleted successfully with name {}, group {}", job.getName(), job.getGroup());
@@ -174,6 +178,8 @@ public class SchedulerServiceImpl implements SchedulerService {
     private boolean scheduleNewJob(JobDTO job) {
         try {
             Scheduler scheduler = schedulerFactoryBean.getScheduler();
+
+            schedulerJobService.save(job);
 
             JobDetail jobDetail = JobBuilder
                     .newJob(SampleCronJob.class)
@@ -196,9 +202,9 @@ public class SchedulerServiceImpl implements SchedulerService {
                     trigger = scheduleCreator.createSimpleTrigger(job.getName(), new Date(),
                             job.getRepeatTime(), SimpleTrigger.MISFIRE_INSTRUCTION_FIRE_NOW);
                 }
+
                 scheduler.scheduleJob(jobDetail, trigger);
 
-                schedulerJobService.save(job);
                 return true;
             } else {
                 log.error("scheduleNewJobRequest.jobAlreadyExist");
