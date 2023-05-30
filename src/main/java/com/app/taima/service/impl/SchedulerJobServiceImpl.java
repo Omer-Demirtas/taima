@@ -20,6 +20,7 @@ public class SchedulerJobServiceImpl implements SchedulerJobService {
     public void save(JobDTO job) {
         SchedulerJob schedulerJob = modelMapper.map(job, SchedulerJob.class);
 
+        schedulerJob.getProcesses().forEach(process -> process.setJob(schedulerJob));
         schedulerRepository.save(schedulerJob);
     }
 }

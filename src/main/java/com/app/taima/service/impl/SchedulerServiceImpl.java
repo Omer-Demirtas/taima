@@ -3,6 +3,7 @@ package com.app.taima.service.impl;
 import com.app.taima.Entity.SchedulerJob;
 import com.app.taima.component.JobScheduleCreator;
 import com.app.taima.dto.JobDTO;
+import com.app.taima.dto.MultiJobDTO;
 import com.app.taima.exception.AlreadyExistsException;
 import com.app.taima.exception.NotfoundException;
 import com.app.taima.exception.OperationFailedException;
@@ -36,11 +37,18 @@ public class SchedulerServiceImpl implements SchedulerService {
     private final JobScheduleCreator scheduleCreator;
     private final SchedulerJobService schedulerJobService;
 
+    private void areJobsExists(MultiJobDTO jobs) {
+        for (JobDTO job : jobs.getJobs()) {
+            isJobExists(job);
+        }
+    }
+
     private void isJobExists(JobDTO job) {
         try {
             JobDetail jobDetail = scheduler.getJobDetail(new JobKey(job.getName(), job.getGroup()));
 
             if (jobDetail == null) {
+                log.info("JOB NOT FOUND WITH {} {}", job.getName(), job.getGroup());
                 throw new NotfoundException("job");
             }
         } catch (Exception e) {
@@ -143,13 +151,16 @@ public class SchedulerServiceImpl implements SchedulerService {
     /**
      * Delete job
      */
-    public boolean deleteJob(JobDTO job) {
-        isJobExists(job);
+    public boolean deleteJob(MultiJobDTO jobs) {
+        areJobsExists(jobs);
 
         try {
-            scheduler.deleteJob(new JobKey(job.getName(), job.getGroup()));
+            for (JobDTO job : jobs.getJobs()) {
+                scheduler.deleteJob(new JobKey(job.getName(), job.getGroup()));
 
-            log.info("Job deleted successfully with name {}, group {}", job.getName(), job.getGroup());
+                log.info("Job deleted successfully with name {}, group {}", job.getName(), job.getGroup());
+            }
+
             return true;
         }
         catch (Exception e) {
