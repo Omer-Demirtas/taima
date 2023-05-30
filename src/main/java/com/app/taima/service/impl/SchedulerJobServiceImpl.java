@@ -25,6 +25,11 @@ public class SchedulerJobServiceImpl implements SchedulerJobService {
     }
 
     @Override
+    public JobDTO getByNameAndGroup(String name, String group) {
+        return modelMapper.map(schedulerRepository.findByNameAndGroup(name, group), JobDTO.class);
+    }
+
+    @Override
     public void delete(String name, String group) {
         schedulerRepository.deleteByNameAndGroup(name, group);
     }

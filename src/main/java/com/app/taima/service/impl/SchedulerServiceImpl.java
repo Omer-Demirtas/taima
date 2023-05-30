@@ -72,7 +72,10 @@ public class SchedulerServiceImpl implements SchedulerService {
                     String group = jobKey.getGroup();
                     JobDetail jobDetail = scheduler.getJobDetail(jobKey(name, group));
                     List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobDetail.getKey());
-                    jobList.add(new JobDTO(name, group));
+
+                    jobList.add(
+                            schedulerJobService.getByNameAndGroup(name, group)
+                    );
                 }
             }
         } catch (SchedulerException e) {
