@@ -36,9 +36,6 @@ public class SchedulerConfig {
 		SchedulerJobFactory jobFactory = new SchedulerJobFactory();
 		jobFactory.setApplicationContext(applicationContext);
 
-		//Properties properties = new Properties();
-		//properties.putAll(quartzProperties.getProperties());
-
 		SchedulerFactoryBean factory = new SchedulerFactoryBean();
 		factory.setOverwriteExistingJobs(true);
 		factory.setJobFactory(jobFactory);
@@ -46,6 +43,7 @@ public class SchedulerConfig {
 		factory.setSchedulerName("taima");
 		Properties properties = quartzProperties();
 		factory.setQuartzProperties(properties);
+		factory.setApplicationContextSchedulerContextKey("applicationContext");
 
 		factory.setDataSource(dataSource);
 		return factory;

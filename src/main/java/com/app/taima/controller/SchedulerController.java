@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/scheduler")
@@ -16,16 +17,14 @@ public class SchedulerController {
 
     private final SchedulerService schedulerService;
     @GetMapping
-    public List<JobDTO> getAll() {
-        return schedulerService.getAllJob();
+    public GenericResponse<List<JobDTO>> getAll() {
+        return GenericResponse.success(schedulerService.getAllJob());
     }
 
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody JobDTO job) {
-        schedulerService.createJob(job);
-
-        return ResponseEntity.ok(Boolean.TRUE);
+    public GenericResponse<Boolean> save(@RequestBody JobDTO job) {
+        return GenericResponse.success(schedulerService.createJob(job));
     }
 
     @DeleteMapping

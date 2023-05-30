@@ -2,6 +2,8 @@ package com.app.taima.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class JobDTO {
     private Long id;
@@ -12,6 +14,8 @@ public class JobDTO {
     private Boolean isCron;
 
     private Long repeatTime;
+
+    private List<ProcessDTO> processes;
 
     public JobDTO(String name, String group) {
         this.name = name;

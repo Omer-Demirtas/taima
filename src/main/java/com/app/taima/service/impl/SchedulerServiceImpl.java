@@ -1,6 +1,6 @@
 package com.app.taima.service.impl;
 
-import com.app.taima.Entity.SchedulerJobInfo;
+import com.app.taima.Entity.SchedulerJob;
 import com.app.taima.component.JobScheduleCreator;
 import com.app.taima.dto.JobDTO;
 import com.app.taima.exception.AlreadyExistsException;
@@ -8,15 +8,16 @@ import com.app.taima.exception.NotfoundException;
 import com.app.taima.exception.OperationFailedException;
 import com.app.taima.job.SampleCronJob;
 import com.app.taima.repository.SchedulerRepository;
+import com.app.taima.service.SchedulerJobService;
 import com.app.taima.service.SchedulerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.modelmapper.ModelMapper;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,9 +32,9 @@ import static org.quartz.JobKey.jobKey;
 public class SchedulerServiceImpl implements SchedulerService {
     private final Scheduler scheduler;
     private final SchedulerFactoryBean schedulerFactoryBean;
-    private final SchedulerRepository schedulerRepository;
     private final ApplicationContext context;
     private final JobScheduleCreator scheduleCreator;
+    private final SchedulerJobService schedulerJobService;
 
     private void isJobExists(JobDTO job) {
         try {
@@ -46,10 +47,6 @@ public class SchedulerServiceImpl implements SchedulerService {
             log.error(e, e);
             throw new NotfoundException("job");
         }
-    }
-
-    private List<String> getAllJobList() {
-        return schedulerRepository.findAll().stream().map(schedulerJobInfo -> schedulerJobInfo.getJobName() + schedulerJobInfo.getJobGroup()).collect(Collectors.toList());
     }
 
     @Override
@@ -162,6 +159,7 @@ public class SchedulerServiceImpl implements SchedulerService {
         }
     }
 
+
     private boolean scheduleNewJob(JobDTO job) {
         try {
             Scheduler scheduler = schedulerFactoryBean.getScheduler();
@@ -188,8 +186,8 @@ public class SchedulerServiceImpl implements SchedulerService {
                             job.getRepeatTime(), SimpleTrigger.MISFIRE_INSTRUCTION_FIRE_NOW);
                 }
                 scheduler.scheduleJob(jobDetail, trigger);
-                //jobInfo.setJobStatus("SCHEDULED");
-                //schedulerRepository.save(jobInfo);
+
+                schedulerJobService.save(job);
                 return true;
             } else {
                 log.error("scheduleNewJobRequest.jobAlreadyExist");
